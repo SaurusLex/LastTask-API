@@ -26,8 +26,8 @@ class ProjectController extends Controller
 
         $user = Auth::user();
 
-        $request->user_id = $user->id;
-        return Project::create($request->all());
+        $project = array_merge($request->all(),['user_id'=>$user->id]);
+        return Project::create($project);
     }
 
     public function getByUserId($id)
@@ -55,7 +55,7 @@ class ProjectController extends Controller
     {
         $mpdf                     = new Mpdf();
         $project = Project::find($id);
-        $tasks                    = $project->tasks;
+        $tasks                    = $project->tasks()->where("status","C")->get();
 
         $projectCost = $project->cost_per_hour;
         $client = $project->client;
@@ -63,7 +63,8 @@ class ProjectController extends Controller
         $logoSrc = public_path().'\img\logo.png';
         $img = '<div style="text-align:center; margin:20px"><img width="100px"  src="'.$logoSrc.'"/></div>';
         $mpdf->WriteHTML($img);
-        $pdfHeader = "<table cellpadding='5px' autosize='1' width='100%'
+        $pdfHeader = "
+        <table cellpadding='5px' autosize='1' width='100%'
         style='background:rgb(25,50,75);
         overflow: wrap;
         border-collapse: collapse;
