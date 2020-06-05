@@ -15,11 +15,11 @@
 </head>
 
 <body>
-    
+
     <table align='center' style='text-align:center'>
         <tr>
           <td align='center' style='text-align:center'>
-            <img src="{{$message->embed(asset('public/img/logo.png'))}}" height="100" width="100">
+            <img src="{{$message->embed(asset('/img/logo.png'))}}" height="100" width="100">
             <h1>Enhorabuena {{$data["name"]}},</h1>
             <h4>Tu cuenta con el correo {{$data["email"]}} ha sido creada correctamente.</h4>
           </td>

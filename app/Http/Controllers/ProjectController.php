@@ -59,9 +59,19 @@ class ProjectController extends Controller
 
         $projectCost = $project->cost_per_hour;
         $client = $project->client;
+        $today = date('d/m/yy');
+        $topHeader = "<table width='100%' style='margin-bottom:30px;font-size:0.9em' >
+        <tbody>
+        <tr>
+            <td>Justificante de proyecto</td>
+            <td align='right'>$today</td>
+        </tr>
+        </tbody>
 
+        </table>";
+        $mpdf->WriteHTML($topHeader);
         $logoSrc = public_path().'\img\logo.png';
-        $img = '<div style="text-align:center; margin:20px"><img width="100px"  src="'.$logoSrc.'"/></div>';
+        $img = '<div style="text-align:center; margin:50px"><img width="150px"  src="'.$logoSrc.'"/></div>';
         $mpdf->WriteHTML($img);
         $pdfHeader = "
         <table cellpadding='5px' autosize='1' width='100%'
@@ -77,7 +87,7 @@ class ProjectController extends Controller
         </tr>
         <tr>
 
-        <td align='right' colspan='2'>Tipo cliente: $client->type</td>
+        <td align='right' colspan='2'>Tipo de cliente: $client->type</td>
         </tr>
 
         </tbody>
@@ -85,9 +95,9 @@ class ProjectController extends Controller
         $mpdf->WriteHTML($pdfHeader);
         $mpdf->WriteHTML("<div ><h3>Tareas:</h3></div>");
 
-        $thead="<tr><th>Titulo</th>
-        <th>Descripcion</th>
-        <th>Duracion</th>
+        $thead="<tr><th>Título</th>
+        <th>Descripción</th>
+        <th>Duración</th>
         <th>Coste</th></tr>";
         $tbody = "";
         $totalCost = 0;
@@ -103,7 +113,7 @@ class ProjectController extends Controller
                 </tr>";
             }
         }
-        $tbody.="<tr><th colspan='3' align='right'>Total:</th><td>$totalCost €</td></tr>";
+        $tbody.="<tr><th colspan='3' align='right'>Total:</th><td style='background:#ffeaa7;font-weight: bold;font-size:1.1em'>$totalCost €</td></tr>";
         $table ="<table cellpadding='5px' autosize='1' border='1' width='100%' style='overflow: wrap;border-collapse: collapse;'><thead>$thead</thead><tbody>$tbody</tbody></table>";
 
         $html =
@@ -121,6 +131,7 @@ class ProjectController extends Controller
         header("Access-Control-Allow-Origin: *");
         $mpdf->Output('justificante.pdf', 'I');
     }
+
     public function estimatedBudget($id)
     {
         $mpdf                     = new Mpdf();
@@ -129,9 +140,20 @@ class ProjectController extends Controller
 
         $projectCost = $project->cost_per_hour;
         $client = $project->client;
+        $today = date('d/m/yy');
+        $topHeader = "<table width='100%' style='margin-bottom:30px;font-size:0.9em' >
+            <tbody>
+            <tr>
+                <td>Propuesta de proyecto</td>
+                <td align='right'>$today</td>
+            </tr>
+            </tbody>
+
+        </table>";
+        $mpdf->WriteHTML($topHeader);
 
         $logoSrc = public_path().'\img\logo.png';
-        $img = '<div style="text-align:center; margin:20px"><img width="100px"  src="'.$logoSrc.'"/></div>';
+        $img = '<div style="text-align:center; margin:50px"><img width="150px"  src="'.$logoSrc.'"/></div>';
         $mpdf->WriteHTML($img);
         $pdfHeader = "<table cellpadding='5px' autosize='1' width='100%'
         style='background:rgb(25,50,75);
@@ -152,27 +174,28 @@ class ProjectController extends Controller
         </tbody>
         </table>";
         $mpdf->WriteHTML($pdfHeader);
+
         $mpdf->WriteHTML("<div ><h3>Tareas:</h3></div>");
 
-        $thead="<tr><th>Titulo</th>
-        <th>Descripcion</th>
-        <th>Duracion</th>
+        $thead="<tr><th>Título</th>
+        <th>Descripción</th>
+        <th>Duración estimada</th>
         <th>Coste</th></tr>";
         $tbody = "";
         $totalCost = 0;
         foreach($tasks as $task){
-            if($task->status == "C"){
-                $taskCost = $task->duration*$projectCost;
+
+                $taskCost = $task->estimated_duration*$projectCost;
                 $totalCost+=$taskCost;
                 $tbody .= "<tr>
                 <td>$task->title</td>
                 <td>$task->description</td>
-                <td>$task->duration horas</td>
+                <td>$task->estimated_duration horas</td>
                 <td>$taskCost €</td>
                 </tr>";
-            }
+
         }
-        $tbody.="<tr><th colspan='3' align='right'>Total:</th><td>$totalCost €</td></tr>";
+        $tbody.="<tr><th colspan='3' align='right'>Total:</th><td style='background:#ffeaa7;font-weight: bold;font-size:1.1em'>$totalCost €</td></tr>";
         $table ="<table cellpadding='5px' autosize='1' border='1' width='100%' style='overflow: wrap;border-collapse: collapse;'><thead>$thead</thead><tbody>$tbody</tbody></table>";
 
         $html =
